@@ -10,6 +10,7 @@ export default function Index() {
     const [editTodo, setEditTodo] = useState({ title: "", description: "" });
     const [commentInputs, setCommentInputs] = useState({});
     const [commentImages, setCommentImages] = useState({});
+    
 
     // เพิ่ม Todo
     const handleAdd = async (e) => {
@@ -254,6 +255,15 @@ export default function Index() {
                                     )}
                                 </div>
                             </div>
+                                    {todo.is_done && (
+                                        <p className="text-success small mt-2">
+                                            ✅ ทำเสร็จโดย {todo.checked_user?.name ?? "ไม่ทราบ"} เมื่อ{" "}
+                                            {new Date(todo.checked_at).toLocaleString("th-TH", {
+                                                dateStyle: "medium",
+                                                timeStyle: "short",
+                                            })}
+                                        </p>
+                                    )}
 
                            
                             <div className="mt-3 border-top pt-3 w-100">

@@ -24,6 +24,10 @@ class Todo extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function checkedUser()
+    {
+        return $this->belongsTo(User::class, 'checked_by');
+    }
 
     public function comments()
     {

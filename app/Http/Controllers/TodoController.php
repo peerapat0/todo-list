@@ -12,7 +12,11 @@ class TodoController extends Controller
 {
     public function index()
     {
-        $todos = Todo::with('user', 'comments.user')->latest()->get();
+       
+        $todos = Todo::with(['user', 'comments.user', 'checkedUser'])
+            ->latest()
+            ->get();
+
         return Inertia::render('Todos/Index', [
             'todos' => $todos,
             'auth' => Auth::user(),
@@ -51,11 +55,21 @@ class TodoController extends Controller
     public function check($id)
     {
         $todo = Todo::findOrFail($id);
-        $todo->update([
-            'is_done' => !$todo->is_done,
-            'checked_by' => Auth::id(),
-            'checked_at' => now(),
-        ]);
-        return response()->json($todo);
+
+        if ($todo->is_done) {
+            // ถ้ายกเลิก
+            $todo->is_done = false;
+            $todo->checked_by = null;
+            $todo->checked_at = null;
+        } else {
+            // ถ้าทำเสร็จ
+            $todo->is_done = true;
+            $todo->checked_by = Auth::id();
+            $todo->checked_at = now();
+        }
+
+        $todo->save();
+
+        return response()->json(['success' => true]);
     }
 }
